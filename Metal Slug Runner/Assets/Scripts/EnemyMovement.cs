@@ -5,22 +5,29 @@ public class EnemyMovement : MonoBehaviour
     public float bounceForce = 8f; // Fuerza de rebote
     public float moveSpeed = 5f;      // Velocidad horizontal
     private Rigidbody2D rb;
-    private int moveDirection = 1; // 1 para derecha, -1 para izquierda
+    private Vector2 moveDirection;// 1 para derecha, -1 para izquierda
 
     void Start()
     {
         // Obtener el componente Rigidbody2D
         rb = GetComponent<Rigidbody2D>();
+        //moveDirection =  new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)); // Comienza moviéndose a la derecha
+
+        do
+        {
+            moveDirection = new Vector2(Random.Range(-1f, 1f), Random.Range(-1f, 1f));
+        } while (moveDirection == Vector2.zero);
+
+        rb.AddForce(new Vector2(moveSpeed * moveDirection.x, moveSpeed * moveDirection.y), ForceMode2D.Impulse);
     }
 
     // Update is called once per frame
     void Update()
     {
-        // Mantener siempre movimiento horizontal
-        rb.linearVelocity = new Vector2(moveSpeed * moveDirection, rb.linearVelocity.y);
+
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
+    /*void OnCollisionEnter2D(Collision2D collision)
     {
         // Detecta si chocó contra el suelo o el techo para rebotar
         if (collision.gameObject.CompareTag("BRBottom") || collision.gameObject.CompareTag("BRTop"))
@@ -34,5 +41,5 @@ public class EnemyMovement : MonoBehaviour
         {
             moveDirection *= -1; // Cambia de derecha a izquierda y viceversa
         }
-    }
+    }*/
 }

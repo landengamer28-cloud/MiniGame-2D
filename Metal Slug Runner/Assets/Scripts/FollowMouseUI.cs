@@ -15,12 +15,10 @@ public class FollowMouseUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Posición del ratón
-        Vector2 mousePosition = Mouse.current.position.ReadValue();
-        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 10f));
+        // Mover el objeto hacia la posición del ratón siempre que no sobrepase los límites de la pantalla
 
-        // Mover usando física
-        rb.MovePosition(worldPosition);
+        mover();
+
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -35,5 +33,24 @@ public class FollowMouseUI : MonoBehaviour
 #endif
 
         }
+
     }
+
+    private void mover()
+    {
+        // Posición del ratón
+        Vector2 mousePosition = Mouse.current.position.ReadValue();
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, 10f));
+
+        // Obtener límites de la cámara en coordenadas del mundo
+        Vector3 minPantalla = Camera.main.ViewportToWorldPoint(new Vector3(0, 0, 10f));
+        Vector3 maxPantalla = Camera.main.ViewportToWorldPoint(new Vector3(1, 1, 10f));
+
+        // Limitar la posición del objeto dentro de los bordes
+        worldPosition.x = Mathf.Clamp(worldPosition.x, minPantalla.x, maxPantalla.x);
+        worldPosition.y = Mathf.Clamp(worldPosition.y, minPantalla.y, maxPantalla.y);
+
+        transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
+    }
+
 }
