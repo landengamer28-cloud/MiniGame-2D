@@ -45,6 +45,7 @@ public class NewMonoBehaviourScript : MonoBehaviour
         StartCoroutine(RespawnAfterDelay());
     }
 
+    // Coroutine para esperar y respawnear
     IEnumerator RespawnAfterDelay()
     {
         yield return new WaitForSeconds(respawnDelay);

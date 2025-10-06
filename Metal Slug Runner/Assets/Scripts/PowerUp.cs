@@ -1,9 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 
 public class PowerUp : MonoBehaviour
 {
     public event Action OnCollected; // Evento para avisar al spawner
+    public static event Action OnPowerUpCollected; // Evento global
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,13 +22,15 @@ public class PowerUp : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("El jugador recogi� el PowerUp");
+            Debug.Log("El jugador recogió el PowerUp");
 
             // Avisar al spawner
             OnCollected?.Invoke();
+            OnPowerUpCollected?.Invoke();
 
             // Destruir el PowerUp
             Destroy(gameObject);
         }
     }
+
 }
