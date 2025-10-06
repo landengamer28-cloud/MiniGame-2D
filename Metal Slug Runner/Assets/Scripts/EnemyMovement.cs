@@ -7,11 +7,20 @@ public class EnemyMovement : MonoBehaviour
     private Rigidbody2D rb;
     private Vector2 moveDirection;// 1 para derecha, -1 para izquierda
 
+    public AudioClip bounceSound;      // Sonido al chocar con un borde
+    private AudioSource audioSource;
+
     void Start()
     {
         // Obtener el componente Rigidbody2D
         rb = GetComponent<Rigidbody2D>();
         //moveDirection =  new Vector2(Random.Range(-1, 1), Random.Range(-1, 1)); // Comienza moviéndose a la derecha
+
+        // Obtener el componente AudioSource
+        audioSource = GetComponent<AudioSource>();
+        // Asegurar que el audio no se reproduzca en loop
+        audioSource.loop = false;
+
 
         do
         {
@@ -27,19 +36,19 @@ public class EnemyMovement : MonoBehaviour
 
     }
 
-    /*void OnCollisionEnter2D(Collision2D collision)
+    void OnCollisionEnter2D(Collision2D collision)
     {
-        // Detecta si chocó contra el suelo o el techo para rebotar
-        if (collision.gameObject.CompareTag("BRBottom") || collision.gameObject.CompareTag("BRTop"))
+        // Verificar si el objeto tiene alguno de los tags de borde
+        if (collision.gameObject.CompareTag("BRTop") ||
+            collision.gameObject.CompareTag("BRBottom") ||
+            collision.gameObject.CompareTag("BRRigth") ||
+            collision.gameObject.CompareTag("BRLeft"))
         {
-            float direction = collision.gameObject.CompareTag("BRBottom") ? 1f : -1f;
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, bounceForce * direction);
+            // Reproducir sonido
+            if (bounceSound != null)
+                audioSource.PlayOneShot(bounceSound);
         }
 
-        // Cambiar dirección si toca una pared o a otro enemigo
-        if (collision.gameObject.CompareTag("BRLeft") || collision.gameObject.CompareTag("BRRigth") || collision.gameObject.CompareTag("Enemy"))
-        {
-            moveDirection *= -1; // Cambia de derecha a izquierda y viceversa
-        }
-    }*/
+    }
+
 }
