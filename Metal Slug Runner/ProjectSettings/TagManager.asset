@@ -9,6 +9,7 @@ TagManager:
   - BRLeft
   - BRRigth
   - Enemy
+  - PowerUp
   layers:
   - Default
   - TransparentFX

@@ -7,10 +7,10 @@ public class EnemyMovement : MonoBehaviour
     public float moveSpeed = 5f;       // Velocidad horizontal
     public AudioClip bounceSound;      // Sonido al chocar con un borde
 
-    private Rigidbody2D rb;
-    private Vector2 moveDirection;
-    private AudioSource audioSource;
-    private bool isFrozen = false;
+    private Rigidbody2D rb; // Componente Rigidbody2D
+    private Vector2 moveDirection; // Dirección de movimiento
+    private AudioSource audioSource; // Componente AudioSource
+    private bool isFrozen = false; // Estado de congelación
 
     void Start()
     {
@@ -37,6 +37,7 @@ public class EnemyMovement : MonoBehaviour
         PowerUp.OnPowerUpCollected -= FreezeFor3Seconds;
     }
 
+    // Detectar colisiones con los bordes para rebotar
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("BRTop") ||
@@ -49,12 +50,14 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
+    // Congelar el enemigo durante 3 segundos
     private void FreezeFor3Seconds()
     {
         if (!gameObject.activeInHierarchy) return;
         StartCoroutine(FreezeCoroutine());
     }
 
+    // Corrutina para congelar y luego restaurar el movimiento
     private IEnumerator FreezeCoroutine()
     {
         if (isFrozen) yield break;

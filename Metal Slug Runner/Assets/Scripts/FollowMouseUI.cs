@@ -24,21 +24,6 @@ public class FollowMouseUI : MonoBehaviour
 
     }
 
-    void OnCollisionEnter2D(Collision2D collision)
-    {
-        // Si colisiona con un Enemy
-        if (collision.gameObject.CompareTag("Enemy"))
-        {
-            Debug.Log("¡Jugador detectó un enemigo! Se cierra el juego.");
-            Application.Quit(); // Cierra el juego
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false; // Detiene el juego en el editor
-#endif
-
-        }
-
-    }
-
     private void mover()
     {
         // Posición del ratón

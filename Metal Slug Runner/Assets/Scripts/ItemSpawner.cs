@@ -4,11 +4,12 @@ using System.Collections;
 public class NewMonoBehaviourScript : MonoBehaviour
 {
     public GameObject powerUpPrefab;  // Asigna tu prefab aquí
-    private GameObject currentPowerUp;
+    private GameObject currentPowerUp; // Referencia al PowerUp actual
     public float respawnDelay = 15f;   // Tiempo de espera en segundos antes de respawnear
 
     void Start()
     {
+        // Iniciar el primer spawn
         SpawnPowerUp();
     }
 

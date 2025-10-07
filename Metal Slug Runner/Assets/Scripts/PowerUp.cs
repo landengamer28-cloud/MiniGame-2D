@@ -18,6 +18,7 @@ public class PowerUp : MonoBehaviour
         
     }
 
+    // Detectar colisión con el jugador
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
