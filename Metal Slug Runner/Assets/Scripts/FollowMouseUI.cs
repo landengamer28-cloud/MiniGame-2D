@@ -3,28 +3,24 @@ using UnityEngine.InputSystem;
 
 public class FollowMouseUI : MonoBehaviour
 {
-
     private Rigidbody2D rb;
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
         Cursor.visible = false;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        // Mover el objeto hacia la posición del ratón siempre que no sobrepase los límites de la pantalla
-
-        mover();
-
+        // Solo mover si el juego NO está pausado
+        if (Time.timeScale > 0f)
+        {
+            Mover();
+        }
     }
 
-    private void mover()
+    private void Mover()
     {
         // Posición del ratón
         Vector2 mousePosition = Mouse.current.position.ReadValue();
@@ -40,5 +36,4 @@ public class FollowMouseUI : MonoBehaviour
 
         transform.position = new Vector3(worldPosition.x, worldPosition.y, 0f);
     }
-
 }
