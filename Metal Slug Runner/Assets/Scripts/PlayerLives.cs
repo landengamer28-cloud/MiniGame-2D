@@ -86,6 +86,11 @@ public class PlayerLives : MonoBehaviour
         isGameOver = true;
         Time.timeScale = 0f;
 
+        // Detener el contador de tiempo y guardar el tiempo actual
+        TimeScoreManager.Instance.StopCounting();
+        TimeScoreManager.Instance.SaveCurrentTime();
+
+
         // Reproducir grito de muerte
         if (sfxSource != null && deathScream != null)
         {
@@ -136,6 +141,9 @@ public class PlayerLives : MonoBehaviour
     // Reiniciar el juego recargando la escena actual
     public void RestartGame()
     {
+        if (TimeScoreManager.Instance != null)
+            TimeScoreManager.Instance.ResetCurrentTime(); // Reiniciar tiempo
+
         Time.timeScale = 1f;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
@@ -143,11 +151,7 @@ public class PlayerLives : MonoBehaviour
     // Salir del juego
     public void QuitGame()
     {
-        // Salir si estamos en el editor
-#if UNITY_EDITOR
-            UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        Time.timeScale = 1f; // Restaurar el tiempo antes de cambiar escena
+        SceneManager.LoadScene("MainMenu");
     }
 }

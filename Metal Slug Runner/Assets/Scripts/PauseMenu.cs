@@ -38,6 +38,16 @@ public class PauseMenu : MonoBehaviour
 
     public void Resume()
     {
+        // Buscar el objeto que sigue al ratón
+        FollowMouseUI follower = FindObjectOfType<FollowMouseUI>();
+        if (follower != null)
+        {
+            // Convertir la posición del objeto a coordenadas de pantalla
+            Vector3 screenPos = Camera.main.WorldToScreenPoint(follower.transform.position);
+            Mouse.current.WarpCursorPosition(new Vector2(screenPos.x, screenPos.y));
+        }
+
+        // Ahora reanudar el juego normalmente
         pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
@@ -52,10 +62,7 @@ public class PauseMenu : MonoBehaviour
 
     public void QuitGame()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
-#else
-        Application.Quit();
-#endif
+        Time.timeScale = 1f; // Restaurar el tiempo antes de cambiar escena
+        SceneManager.LoadScene("MainMenu");
     }
 }
