@@ -3,18 +3,18 @@ using UnityEngine;
 
 public class EnemyMovement : MonoBehaviour
 {
-    public float bounceForce = 8f;     // Fuerza de rebote
-    public float moveSpeed = 5f;       // Velocidad horizontal
-    public AudioClip bounceSound;      // Sonido al chocar con un borde
+    public float bounceForce = 8f;
+    public float moveSpeed = 5f;
+    public AudioClip bounceSound;
 
-    private Rigidbody2D rb; // Componente Rigidbody2D
-    private Vector2 moveDirection; // Dirección de movimiento
-    private AudioSource audioSource; // Componente AudioSource
-    private bool isFrozen = false; // Estado de congelación
+    private Rigidbody2D rb;
+    private Vector2 moveDirection;
+    private AudioSource audioSource;
+    private bool isFrozen = false;
+    private bool isBoosted = false;
 
     void Start()
     {
-        // Obtener componentes
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
         audioSource.loop = false;
@@ -27,17 +27,17 @@ public class EnemyMovement : MonoBehaviour
 
         rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode2D.Impulse);
 
-        // Suscribirse al evento del PowerUp
+        // Suscribirse a ambos eventos
         PowerUp.OnPowerUpCollected += FreezeFor3Seconds;
+        PowerUp.OnSpeedBoostCollected += BoostSpeedFor3Seconds;
     }
 
     void OnDestroy()
     {
-        // Desuscribirse del evento al eliminar el enemigo
         PowerUp.OnPowerUpCollected -= FreezeFor3Seconds;
+        PowerUp.OnSpeedBoostCollected -= BoostSpeedFor3Seconds;
     }
 
-    // Detectar colisiones con los bordes para rebotar
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("BRTop") ||
@@ -50,30 +50,56 @@ public class EnemyMovement : MonoBehaviour
         }
     }
 
-    // Congelar el enemigo durante 3 segundos
+    // Congelar enemigos
     private void FreezeFor3Seconds()
     {
         if (!gameObject.activeInHierarchy) return;
         StartCoroutine(FreezeCoroutine());
     }
 
-    // Corrutina para congelar y luego restaurar el movimiento
     private IEnumerator FreezeCoroutine()
     {
         if (isFrozen) yield break;
         isFrozen = true;
 
-        // Guardar velocidad y detener movimiento
         Vector2 savedVelocity = rb.linearVelocity;
         rb.linearVelocity = Vector2.zero;
         rb.isKinematic = true;
 
-        yield return new WaitForSeconds(3f); // 3 segundos de pausa
+        yield return new WaitForSeconds(3f);
 
-        // Restaurar movimiento
         rb.isKinematic = false;
         rb.linearVelocity = savedVelocity;
         isFrozen = false;
     }
 
+    // Duplicar velocidad temporalmente
+    private void BoostSpeedFor3Seconds()
+    {
+        if (!gameObject.activeInHierarchy) return;
+        StartCoroutine(SpeedBoostCoroutine());
+    }
+
+    private IEnumerator SpeedBoostCoroutine()
+    {
+        if (isBoosted) yield break;
+        isBoosted = true;
+
+        float originalSpeed = moveSpeed;
+        moveSpeed *= 2f;
+        rb.linearVelocity *= 2f;
+
+        // Opcional: feedback visual
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        Color originalColor = sr.color;
+        sr.color = Color.red;
+
+        yield return new WaitForSeconds(3f);
+
+        moveSpeed = originalSpeed;
+        rb.linearVelocity /= 2f;
+        sr.color = originalColor;
+        isBoosted = false;
+    }
 }
+

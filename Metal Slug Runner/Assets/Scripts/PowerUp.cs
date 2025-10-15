@@ -3,35 +3,34 @@ using System;
 
 public class PowerUp : MonoBehaviour
 {
-    public event Action OnCollected; // Evento para avisar al spawner
-    public static event Action OnPowerUpCollected; // Evento global
+    public enum PowerUpType { Freeze, SpeedBoost } // Nuevo enum
+    public PowerUpType type = PowerUpType.Freeze;  // Puedes elegir en el Inspector
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
+    public event Action OnCollected; // Evento local para el spawner
+    public static event Action OnPowerUpCollected; // Evento global (freeze)
+    public static event Action OnSpeedBoostCollected; // Nuevo evento global
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    // Detectar colisión con el jugador
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            Debug.Log("El jugador recogió el PowerUp");
+            Debug.Log($"El jugador recogió el PowerUp de tipo: {type}");
 
-            // Avisar al spawner
             OnCollected?.Invoke();
-            OnPowerUpCollected?.Invoke();
 
-            // Destruir el PowerUp
+            // Lanzar evento según el tipo
+            switch (type)
+            {
+                case PowerUpType.Freeze:
+                    OnPowerUpCollected?.Invoke();
+                    break;
+                case PowerUpType.SpeedBoost:
+                    OnSpeedBoostCollected?.Invoke();
+                    break;
+            }
+
             Destroy(gameObject);
         }
     }
-
 }
+
